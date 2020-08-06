@@ -44,9 +44,24 @@ function getCountryData(countryName, callback) {
         .catch(error => console.log(error));
 }
 
-function loadSuggestions(countries) {
+const suggestions = {};
 
-    const suggestions = {};
+function makeHttpRequest(e) {
+
+    if(suggestions[e] === null) {
+        getCountriesData(`https://restcountries.eu/rest/v2/region/${e}`, viewCountries);    
+    } else {
+        if(e.includes('|')) {
+            const start = e.indexOf('|') + 2;
+            const end = e.indexOf('|', start) - 1;
+            e = e.slice(start, end);
+        }
+        getCountryData(e, viewCountryInfo);
+    }
+}
+
+function loadSuggestions(countries) {
+    
     countries.forEach(country => {
         const {name, capital, flag, region} = country;
         suggestions[name] = flag;
@@ -61,19 +76,7 @@ function loadSuggestions(countries) {
     const options = {
 
         data: suggestions,
-        onAutocomplete : e => {
-
-            if(suggestions[e] === null) {
-                getCountriesData(`https://restcountries.eu/rest/v2/region/${e}`, viewCountries);    
-            } else {
-                if(e.includes('|')) {
-                    const start = e.indexOf('|') + 2;
-                    const end = e.indexOf('|', start) - 1;
-                    e = e.slice(start, end);
-                }
-                getCountryData(e, viewCountryInfo);
-            }
-        },
+        onAutocomplete : makeHttpRequest,
         limit: 5
     };
 
