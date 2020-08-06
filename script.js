@@ -143,7 +143,7 @@ function viewMostPopulousAndLargestCountries(populousCountries, largestCountries
         <div class="col l6 s12 m12">
             <h5 class="grey-text text-darken-2 animate__animated animate__fadeInLeft"><u>Top 10 Most Populous Countries</u></h5>
             <canvas id="populationCanvas" height="350"></canvas>
-            <ul class="collection z-depth-1 hoverable animate__animated animate__fadeInLeft">
+            <ul class="collection z-depth-1 animate__animated animate__fadeInLeft">
                 ${populationList}
             </ul>
         </div>
@@ -168,7 +168,7 @@ function viewMostPopulousAndLargestCountries(populousCountries, largestCountries
     <div class="col l6 s12 m12">
             <h5 class="grey-text text-darken-2 animate__animated animate__fadeInRight"><u>Top 10 Most Largest Countries</u></h5>
             <canvas id="areaCanvas" height="350"></canvas>
-            <ul class="collection z-depth-1 hoverable animate__animated animate__fadeInRight">
+            <ul class="collection z-depth-1 animate__animated animate__fadeInRight">
                 ${areaList}
             </ul>
         </div>
@@ -226,7 +226,7 @@ function viewMostPopulousAndLargestCountriesChart(populousCountries, largestCoun
         options: {
             responsive: true,
             maintainAspectRatio: true,
-        }
+        },
     };
 
     const areaChartObject = {
