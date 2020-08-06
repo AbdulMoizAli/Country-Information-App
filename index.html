@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.0/animate.min.css"
+        integrity="sha256-6hqHMqXTVEds1R8HgKisLm3l/doneQs+rS1a5NLmwwo=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./images/Box - 01.png" type="image/png">
+    <title>Country Information</title>
+
+</head>
+
+<body class="grey lighten-5">
+
+    <header>
+        <nav>
+            <div class="nav-wrapper z-depth-1 hoverable teal lighten-2" style="height: 70px;">
+                <a class="brand-logo lg"><u><big>C</big></u>ountry<u><big>I</big></u>nformation</a>
+            </div>
+        </nav>
+    </header>
+    
+    <br>
+
+    <main>
+        <div class="container">
+            <div class="row">
+                <div class="input-field col l8 s12 m8">
+                    <i class="material-icons prefix">search</i>
+                    <input id="inputValue" type="text" class="validate autocomplete" autocomplete="off"
+                        spellcheck="false">
+                    <label for="inputValue">Country Name, Region or Capital City</label>
+                </div>
+                <div class="col l4 s12 m4">
+                    <center id="flag">
+                    </center>
+                </div>
+            </div>
+            <div id="main-info">
+            </div>
+        </div>
+    </main>
+
+    <footer class="page-footer grey lighten-5">
+        <div class="footer-copyright teal lighten-2">
+            <div class="white-text container">
+                <i class="medium material-icons right">public</i>
+                <a href="https://restcountries.eu/" target="_blank" class="white-text hoverable">RESTful Countries API<i
+                        class="tiny material-icons">touch_app</i></a>
+                <br>
+                moizali_@outlook.com
+                <br>
+                <span id="copyright"></span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
+        integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
+    <script src="./script.js"></script>
+</body>
+
+</html>
