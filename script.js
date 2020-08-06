@@ -133,7 +133,7 @@ function viewMostPopulousAndLargestCountries(populousCountries, largestCountries
         populationList += `
         <li class="collection-item avatar grey lighten-4">
             <img src=${flag} class="circle">
-            <span class="title grey-text text-darken-1">${name}</span>
+            <span id="border-item" class="title">${name}</span>
             <div><big>${population[0]} ( ${population[1]} )</big></div>
         </li>
         `;
@@ -158,7 +158,7 @@ function viewMostPopulousAndLargestCountries(populousCountries, largestCountries
         areaList += `
         <li class="collection-item avatar grey lighten-4">
             <img src=${flag} class="circle">
-            <span class="title grey-text text-darken-1">${name}</span>
+            <span id="border-item" class="title">${name}</span>
             <div><big>${area[0]}km²</big></div>
         </li>
         `;
@@ -180,6 +180,8 @@ function viewMostPopulousAndLargestCountries(populousCountries, largestCountries
     ${largestOutput}
     </div>
     `;
+
+    bindEvents();
 
     populousCountries = populousCountries.map(country => {
         return {
@@ -445,7 +447,7 @@ function viewCountryInfo(countries, landBorders) {
         return `
         <li class="collection-item avatar grey lighten-4" style="border: 0;">
             <img src="${border.flag}" class="circle">
-            <span class="title">${border.name}</span>
+            <span id="border-item" class="title">${border.name}</span>
         </li>
         `;
     }).join().replace(/,/g, '');
@@ -536,6 +538,8 @@ function viewCountryInfo(countries, landBorders) {
 
     image.innerHTML = flagImage;
     mainContent.innerHTML = output;
+
+    bindEvents();
 }
 
 function viewCountries(countries) {
@@ -548,7 +552,7 @@ function viewCountries(countries) {
         list += `
         <li class="collection-item avatar grey lighten-4">
             <img src=${flag} class="circle">
-            <span class="title grey-text text-darken-1">${name}</span>
+            <span id="border-item" class="title">${name}</span>
         </li>
         `
     });
@@ -572,11 +576,26 @@ function viewCountries(countries) {
         setTimeout(() => {
             image.innerHTML = null;
             mainContent.innerHTML = output;
+            bindEvents();
         }, 1000);    
     } else {
         mainContent.innerHTML = output;
+        bindEvents();
     }
+}
 
+function bindEvents() {
+    
+    const borderList = document.querySelectorAll('#border-item');
+    borderList.forEach(border => {
+        border.addEventListener('click', e => {
+            const name = e.srcElement.innerText;
+            makeHttpRequest(name);
+            document.documentElement.scrollTop = 0;
+            inputText.focus();
+            inputText.value = name;
+        });
+    });
 }
 
 window.addEventListener('load', () => {
