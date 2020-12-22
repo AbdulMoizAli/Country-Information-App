@@ -2,6 +2,8 @@
 
 Get information about countries via a RESTful API. Search by country name, capital city or region.
 
+> [Project Demo](https://countryinformation.netlify.app)
+
 ## Built With
 
 * [Materialize CSS](https://materializecss.com/) - Materialize is a modern responsive CSS framework based on Material Design by Google.
