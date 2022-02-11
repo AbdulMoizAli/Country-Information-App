@@ -1,10 +1,8 @@
-
 function getCountriesData(url, callback) {
-    
     fetch(url)
         .then(response => {
-            if(response.ok) {
-                return response.json()
+            if (response.ok) {
+                return response.json();
             }
 
             throw new Error('Something Went Wrong!');
@@ -14,27 +12,30 @@ function getCountriesData(url, callback) {
 }
 
 function getCountryData(countryName, callback) {
-    
     let data;
 
-    fetch(`https://restcountries.eu/rest/v2/name/${countryName}?fullText=true`)
+    fetch(`https://restcountries.com/v2/name/${countryName}?fullText=true`)
         .then(response => {
-            if(response.ok) {
+            if (response.ok) {
                 return response.json();
             }
 
             throw new Error('Something Went Wrong!');
         })
         .then(countryData => {
-            if(countryData[0].borders.length == 0) {
+            if (countryData[0].borders.length == 0) {
                 callback(countryData, []);
             } else {
                 data = countryData;
-                return fetch(`https://restcountries.eu/rest/v2/alpha?codes=${countryData[0].borders.join().replace(/,/g, ';')}`);
+                return fetch(
+                    `https://restcountries.com/v2/alpha?codes=${countryData[0].borders
+                        .join()
+                        .replace(/,/g, ';')}`
+                );
             }
         })
         .then(response => {
-            if(response.ok) {
+            if (response.ok) {
                 return response.json();
             }
 
@@ -47,11 +48,13 @@ function getCountryData(countryName, callback) {
 const suggestions = {};
 
 function makeHttpRequest(e) {
-
-    if(suggestions[e] === null) {
-        getCountriesData(`https://restcountries.eu/rest/v2/region/${e}`, viewCountries);    
+    if (suggestions[e] === null) {
+        getCountriesData(
+            `https://restcountries.com/v2/region/${e}`,
+            viewCountries
+        );
     } else {
-        if(e.includes('|')) {
+        if (e.includes('|')) {
             const start = e.indexOf('|') + 2;
             const end = e.indexOf('|', start) - 1;
             e = e.slice(start, end);
@@ -61,45 +64,52 @@ function makeHttpRequest(e) {
 }
 
 function loadSuggestions(countries) {
-    
     countries.forEach(country => {
-        const {name, capital, flag, region} = country;
+        const { name, capital, flag, region } = country;
         suggestions[name] = flag;
-        if(suggestions[region] === undefined && region !== ''){
+        if (suggestions[region] === undefined && region !== '') {
             suggestions[region] = null;
         }
-        if(capital !== '') {
+        if (capital !== '') {
             suggestions[`${capital} | ${name} |`] = flag;
         }
     });
 
     const options = {
-
         data: suggestions,
-        onAutocomplete : makeHttpRequest,
-        limit: 5
+        onAutocomplete: makeHttpRequest,
+        limit: 5,
     };
 
     const elem = document.querySelector('.autocomplete');
     M.Autocomplete.init(elem, options);
 
-    const mostPopulousCountries = countries.sort((a, b) => b.population - a.population).slice(0, 10).map(country => {
-        return {
-            name: country.name,
-            flag: country.flag,
-            population: country.population
-        };
-    });
+    const mostPopulousCountries = countries
+        .sort((a, b) => b.population - a.population)
+        .slice(0, 10)
+        .map(country => {
+            return {
+                name: country.name,
+                flag: country.flag,
+                population: country.population,
+            };
+        });
 
-    const mostLargestCountries = countries.sort((a, b) => b.area - a.area).slice(0, 10).map(country => {
-        return {
-            name: country.name,
-            flag: country.flag,
-            area: country.area
-        };
-    });
+    const mostLargestCountries = countries
+        .sort((a, b) => b.area - a.area)
+        .slice(0, 10)
+        .map(country => {
+            return {
+                name: country.name,
+                flag: country.flag,
+                area: country.area,
+            };
+        });
 
-    viewMostPopulousAndLargestCountries(mostPopulousCountries, mostLargestCountries);
+    viewMostPopulousAndLargestCountries(
+        mostPopulousCountries,
+        mostLargestCountries
+    );
 }
 
 const image = document.querySelector('#flag');
@@ -107,29 +117,29 @@ const mainContent = document.querySelector('#main-info');
 const inputText = document.querySelector('#inputValue');
 
 function numFormatter(num) {
-
     const result = [];
     result.push(num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
-    
-    if(num > 999 && num < 1000000){
-        result.push((num/1000).toFixed(2) + 'K');
-    }else if(num > 1000000){
-        result.push((num/1000000).toFixed(2) + 'M'); 
-    }else if(num < 900){
-        result.push(num); 
+
+    if (num > 999 && num < 1000000) {
+        result.push((num / 1000).toFixed(2) + 'K');
+    } else if (num > 1000000) {
+        result.push((num / 1000000).toFixed(2) + 'M');
+    } else if (num < 900) {
+        result.push(num);
     }
 
     return result;
 }
 
-function viewMostPopulousAndLargestCountries(populousCountries, largestCountries) {
-
+function viewMostPopulousAndLargestCountries(
+    populousCountries,
+    largestCountries
+) {
     let populationList = '';
     populousCountries.forEach(country => {
-
         let { name, flag, population } = country;
         population = numFormatter(population);
-        
+
         populationList += `
         <li class="collection-item avatar grey lighten-4">
             <img src=${flag} class="circle">
@@ -151,7 +161,6 @@ function viewMostPopulousAndLargestCountries(populousCountries, largestCountries
 
     let areaList = '';
     largestCountries.forEach(country => {
-
         let { name, flag, area } = country;
         area = numFormatter(area);
 
@@ -173,7 +182,7 @@ function viewMostPopulousAndLargestCountries(populousCountries, largestCountries
             </ul>
         </div>
     `;
-    
+
     mainContent.innerHTML = `
     <div class="row">
     ${populationOutput}
@@ -186,23 +195,30 @@ function viewMostPopulousAndLargestCountries(populousCountries, largestCountries
     populousCountries = populousCountries.map(country => {
         return {
             name: country.name,
-            population: country.population
+            population: country.population,
         };
     });
 
     largestCountries = largestCountries.map(country => {
         return {
             name: country.name,
-            area: country.area
+            area: country.area,
         };
     });
 
-    viewMostPopulousAndLargestCountriesChart(populousCountries, largestCountries);
+    viewMostPopulousAndLargestCountriesChart(
+        populousCountries,
+        largestCountries
+    );
 }
 
-function viewMostPopulousAndLargestCountriesChart(populousCountries, largestCountries) {
-    
-    const populationCanvas = document.querySelector('#populationCanvas').getContext('2d');
+function viewMostPopulousAndLargestCountriesChart(
+    populousCountries,
+    largestCountries
+) {
+    const populationCanvas = document
+        .querySelector('#populationCanvas')
+        .getContext('2d');
     const areaCanvas = document.querySelector('#areaCanvas').getContext('2d');
 
     const populationChartObject = {
@@ -219,9 +235,9 @@ function viewMostPopulousAndLargestCountriesChart(populousCountries, largestCoun
                     borderWidth: 1,
                     data: populousCountries.map(country => {
                         return country.population;
-                    })
-                }
-            ]
+                    }),
+                },
+            ],
         },
         options: {
             responsive: true,
@@ -243,9 +259,9 @@ function viewMostPopulousAndLargestCountriesChart(populousCountries, largestCoun
                     borderWidth: 1,
                     data: largestCountries.map(country => {
                         return country.area;
-                    })
-                }
-            ]
+                    }),
+                },
+            ],
         },
         options: {
             responsive: true,
@@ -254,28 +270,26 @@ function viewMostPopulousAndLargestCountriesChart(populousCountries, largestCoun
                 yAxes: [
                     {
                         ticks: {
-                            callback: function(value, index, valies) {
+                            callback: function (value, index, valies) {
                                 return value + 'km²';
-                            }
-                        }
-                    }
-                ]
-            }
-        }
+                            },
+                        },
+                    },
+                ],
+            },
+        },
     };
-    
+
     const populationChart = new Chart(populationCanvas, populationChartObject);
     const areaChart = new Chart(areaCanvas, areaChartObject);
 }
 
 function viewCountryInfo(countries, landBorders) {
-
     let {
-
         flag,
         name: commonName,
         nativeName,
-        altSpellings : otherNames,
+        altSpellings: otherNames,
         translations,
         languages,
         population,
@@ -294,28 +308,33 @@ function viewCountryInfo(countries, landBorders) {
         latlng: latitudeLongitude,
         demonym,
         area,
-        regionalBlocs: regionalBlocks
-
+        regionalBlocs: regionalBlocks,
     } = countries[0];
 
     const flagImage = `
     <img src="${flag}" width="50%" height="50%" class="animate__animated animate__fadeInRight z-depth-1">
     `;
-    
-    otherNames = otherNames.map(otherName => {
-        return `
+
+    otherNames = otherNames
+        .map(otherName => {
+            return `
         <li class="collection-item grey lighten-4" style="border: 0;">${otherName}</li>
         `;
-    }).join().replace(/,/g, '');
+        })
+        .join()
+        .replace(/,/g, '');
 
-    translations = Object.keys(translations).map(key => {
-        return `
+    translations = Object.keys(translations)
+        .map(key => {
+            return `
         <tr>
             <th class="grey lighten-3 grey-text text-darken-1">${key}</th>
             <td class="grey lighten-4">${translations[key]}</td>
         </tr>
         `;
-    }).join().replace(/,/g, '');
+        })
+        .join()
+        .replace(/,/g, '');
 
     const namesTable = `
     <table class="animate__animated animate__fadeInLeft">
@@ -342,14 +361,17 @@ function viewCountryInfo(countries, landBorders) {
 
     population = numFormatter(population);
 
-    languages = languages.map(language => {
-        return `
+    languages = languages
+        .map(language => {
+            return `
         <tr>
             <th class="grey lighten-3 grey-text text-darken-1">${language['iso639_2']}</th>
             <td class="grey lighten-4">${language['nativeName']} ( ${language['name']} )</td>
         </tr>
         `;
-    }).join().replace(/,/g, '');
+        })
+        .join()
+        .replace(/,/g, '');
 
     const languagesTable = `
     <table class="animate__animated animate__fadeInLeft">
@@ -365,11 +387,14 @@ function viewCountryInfo(countries, landBorders) {
 
     topLevelDomain = topLevelDomain.join(', ');
     callingCodes = callingCodes.join(', ');
-    timezones = timezones.map(timeZone => {
-        return `
+    timezones = timezones
+        .map(timeZone => {
+            return `
         <li class="collection-item grey lighten-4" style="border: 0;">${timeZone}</li>
         `;
-    }).join().replace(/,/g, '');
+        })
+        .join()
+        .replace(/,/g, '');
 
     let currencyCode = '';
     let currencyName = '';
@@ -443,15 +468,18 @@ function viewCountryInfo(countries, landBorders) {
 
     const [lat, lng] = latitudeLongitude;
 
-    landBorders = landBorders.map(border => {
-        return `
+    landBorders = landBorders
+        .map(border => {
+            return `
         <li class="collection-item avatar grey lighten-4" style="border: 0;">
             <img src="${border.flag}" class="circle">
             <span id="border-item" class="title">${border.name}</span>
         </li>
         `;
-    }).join().replace(/,/g, '');
-    
+        })
+        .join()
+        .replace(/,/g, '');
+
     let regionalAcronym = '';
     let regionalName = '';
 
@@ -491,7 +519,9 @@ function viewCountryInfo(countries, landBorders) {
                 <td>
                     <center>
                         <a href="https://www.openstreetmap.org/#map=5/${lat}/${lng}" target="_blank" class="btn pulse teal lighten-2">
-                            <i class="material-icons right">map</i>${lat.toFixed(2)}, ${lng.toFixed(2)}
+                            <i class="material-icons right">map</i>${lat.toFixed(
+                                2
+                            )}, ${lng.toFixed(2)}
                         </a>
                     </center>
                 </td>
@@ -543,18 +573,16 @@ function viewCountryInfo(countries, landBorders) {
 }
 
 function viewCountries(countries) {
-
     let list = '';
     countries.forEach(country => {
-
         const { name, flag } = country;
-        
+
         list += `
         <li class="collection-item avatar grey lighten-4">
             <img src=${flag} class="circle">
             <span id="border-item" class="title">${name}</span>
         </li>
-        `
+        `;
     });
 
     const output = `
@@ -566,18 +594,18 @@ function viewCountries(countries) {
             </ul>
         </div>
     </div>
-    `
+    `;
 
-    if(image.children.length) {
+    if (image.children.length) {
         const source = image.children[0].src;
         image.innerHTML = `
         <img src="${source}" width="50%" height="50%" class="animate__animated animate__fadeOutRight">
-        `
+        `;
         setTimeout(() => {
             image.innerHTML = null;
             mainContent.innerHTML = output;
             bindEvents();
-        }, 1000);    
+        }, 1000);
     } else {
         mainContent.innerHTML = output;
         bindEvents();
@@ -585,7 +613,6 @@ function viewCountries(countries) {
 }
 
 function bindEvents() {
-    
     const borderList = document.querySelectorAll('#border-item');
     borderList.forEach(border => {
         border.addEventListener('click', e => {
@@ -600,7 +627,9 @@ function bindEvents() {
 
 window.addEventListener('load', () => {
     const date = new Date().getFullYear();
-    document.querySelector('#copyright').textContent = `Copyright © ${date} Abdul Moiz`;
+    document.querySelector(
+        '#copyright'
+    ).textContent = `Copyright © ${date} Abdul Moiz`;
 });
 
-getCountriesData('https://restcountries.eu/rest/v2/all', loadSuggestions);
+getCountriesData('https://restcountries.com/v2/all', loadSuggestions);
